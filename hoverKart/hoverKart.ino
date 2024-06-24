@@ -1,7 +1,7 @@
-int AccIn= 3;
-int SteerIn = 4;
+int AccIn= 4;
+int SteerIn = 3;
 
-#define DEBUG_VERSION
+//#define DEBUG_VERSION
 #define AccIdleUpperThr 600
 #define AccIdleLowerThr 400
 
@@ -25,7 +25,9 @@ void loop ()
   startFrame = 0xAAAA;
 
   /*Y handling*/
-  yVal = pulseIn(AccIn, HIGH, 100);
+  yVal = 0;
+  yMap = 0;
+  yVal = pulseIn(AccIn, HIGH);
   if((yVal>1000)&&(yVal<2000))
   {
     yVal-=1000;
@@ -44,7 +46,9 @@ void loop ()
   }
 
   /*X handling*/
-  xVal = pulseIn(SteerIn, HIGH, 100);
+  xVal = 0;
+  xMap = 0;
+  xVal = pulseIn(SteerIn, HIGH);
   if((xVal>1000)&&(xVal<2000))
   {
     xVal-=1000;
@@ -61,7 +65,7 @@ void loop ()
                xMap = 0;
     }
   }
-  xMap = xMap * (-1); //added this to invert left and right steer
+  //xMap = xMap * (-1); //added this to invert left and right steer
   crc = startFrame ^ xMap;
   crc ^= yMap;
 #ifndef DEBUG_VERSION
@@ -72,8 +76,8 @@ void loop ()
   Serial.write((uint8_t *) &yMap, sizeof(yMap));
   //delay(1);
   Serial.write((uint8_t *) &crc, sizeof(crc));
-  //In the end, delay the motor control for 412ms, to give the Hover Board enough time to process the last request
-  delay(412);
+  //In the end, delay the motor control for 666ms, to give the Hover Board enough time to process the last request
+  delay(666);
 #endif
 
 #ifdef DEBUG_VERSION
@@ -89,8 +93,10 @@ void loop ()
   Serial.print("X = ");
   Serial.println (xMap, DEC);
 
-  Serial.print ("Y = ");
+  //Serial.print ("Y = ");
   Serial.println (yMap, DEC);
+  Serial.println (crc, DEC);
+  delay(666);
 #endif
 
 }
